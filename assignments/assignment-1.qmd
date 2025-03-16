@@ -2,10 +2,6 @@
 title: "Assignment 1"
 ---
 
-```{r}
-1 + 1
-```
-
 My first assignment has three parts.
 
 ## a) Discussion on Data Science and Industrial Engineering - Kerem Demirtas & Erdi Dasdemir
@@ -96,7 +92,8 @@ for (col in names(mtcars)) {
   }
 }
 
-print(stats_df)
+library(knitr)
+kable(stats_df, caption = "Stats Df")
 
 ```
 
@@ -117,8 +114,8 @@ stats_df <- as.data.frame(t(stats_matrix))
 stats_df <- cbind(Column = rownames(stats_df), stats_df)
 rownames(stats_df) <- NULL
 
-print(stats_df)
-
+library(knitr)
+kable(stats_df, caption = "Stats Df")
 
 ```
 
@@ -143,6 +140,7 @@ cat("Indices of NA values:", na_indices, "\n")
 ### mean and std calculations except NA values
 
 ```{r}
+data("na_example")
 mean_original <- mean(na_example, na.rm = TRUE)
 sd_original <- sd(na_example, na.rm = TRUE)
 
@@ -192,6 +190,6 @@ kable(comparison_df, caption = "Comparison of Different NA Handling Methods")
 
 ### which method should be used? and why?
 
-```{r}
+Filling missing values with the median is generally a more reliable method because it is not affected by extreme outliers and better preserves the overall structure of the data.
 
-```
+On the other hand, filling with a randomly selected value may work better in certain scenarios, such as large-scale datasets, but it carries the risk of distorting the natural distribution of the data.
