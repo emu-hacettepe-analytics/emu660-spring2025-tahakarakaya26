@@ -3,7 +3,7 @@ title: "My Blog"
 sidebar: false 
 ---
 
-# Beatiful Life in Poland
+# A Beatiful Life in Poland
 
 You can access the link:
 (<https://medium.com/@ahmettaha736/erasmus-ya%C5%9Fam%C4%B1m-58ad1d0e6f20>)
