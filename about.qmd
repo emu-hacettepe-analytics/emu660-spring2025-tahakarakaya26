@@ -3,38 +3,51 @@ title: "About Me"
 sidebar: false 
 ---
 
-![](assets/images/vesikalik.jpeg){fig-align="center"}
+![](assets/images/tahafoto.jpg){fig-align="center" width=300}
+
 
 # Education
 
--   B.S., ................................., ....................................University, Turkey, 20xx - 20xx.
--   M.S., Industrial Engineering, Hacettepe University, Turkey, 20xx - ongoing.
--   Ph.D.., Industrial Engineering, Hacettepe University, Turkey, 20xx - ongoing.
+-   Erasmus+, Management and Economy, University of Lodz, Poland, 02.2022 - 07.2022
+
+-   B.S., Industrial Engineering, Hacettepe University, Turkey, 2019 - 2024
+
+-   M.S., Industrial Engineering, Hacettepe University, Turkey, 2024 - ongoing
 
 # Work Experience
 
 ## Employements
 
-1.  Firm xxx, position xx, year xxx
-
-2.  Firm yyy, position yyy, year yyy
+-   Aselsan, Workshop Planning Engineer, 07.2024 - ongoing
 
 ## Internships
 
-1.  Firm aaa, position xx, year xxx
+-   Turkish Aerospace Industries, Business Analyst Intern, Ankara, 07.2023 - 08.2023
 
-2.  Firm bbb, position yyy, year yyy
+-   The Ministry of Industry and Technology, Research Intern, Ankara, 08.2023 - 09.2023
+
+-   Vispera Information Technologies, Data & Insight Analyst Intern, Remote, 09.2023 - 10.2023
 
 # Projects
 
-1.  TUBİTAK 1001..........................
+-   Turkish Aerospace Lift-Up Graduation Project - "Demand Correlation Analysis, Storage Assignment, Vehicle Route Planning", 10.2023 - 07.2024
 
-# Publications
+# Certificates
 
-1.  Dasdemir, E., Batta, R., Koksalan, M., Tezcaner Ozturk, D. (2022) “UAV Routing for Reconnaissance Mission: A Multi-Objective Orienteering Problem with Time-Dependent Prizes and Multiple Connections”, Computers & Operations Research, 145: 105882.
+-   Data Science Bootcamp, TechPro Education, 07.2023
+
+-   Exploratory Data Analysis for Machine Learning, IBM, 10.2023 [https://www.coursera.org/account/accomplishments/certificate/EX2BUDNKARYY](#0){.uri}
+
+-   YEA Exclusive, Young Executive Academy, 08.2023 Verification Code: YEA370314762 [https://verified.youngexecutiveacademy.com/](#0){.uri}
+
+-   YetGen & Paribu Hub Blockchain Fundamentals Training Program, YetGen, 06.2023 [https://verified.sertifier.com/tr/verify/44545373777946/](#0){.uri}
+
+-   YetGen Basic, YetGen, 02.2023 [https://verified.sertifier.com/en/verify/55582192283929/](#0){.uri}
 
 # Competencies
 
-R, Quarto, Git, Python
+R, Quarto, Git, Python, Solidworks, Data Analysis, PowerBI, Tableau, SQL
 
 # Hobbies
+
+Rugby, Billards, Chess
