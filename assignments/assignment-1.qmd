@@ -2,14 +2,64 @@
 title: "Assignment 1"
 ---
 
-# Assignment 1
-
 ```{r}
 1 + 1
 ```
 
-My first assignment has two parts.
+My first assignment has three parts.
 
-## (a)
+## a) Discussion on Data Science and Industrial Engineering - Kerem Demirtas & Erdi Dasdemir
 
-## (b)
+You can access the related discussion through this link. (<https://www.youtube.com/watch?v=cUPtQEyaswM>)
+
+### The Integration of Industrial Engineering and Data Science: A Key to Smarter Decision-Making
+
+The integration of industrial engineering (IE) and data science (DS) is becoming increasingly important in today's business world. This discussion particularly focused on how industrial engineers can enhance their analytical skills and transition into the field of data science. The relationship between traditional optimization techniques and machine learning was explored, highlighting that deterministic modeling methods may fall short in highly variable and uncertain environments. As a result, data-driven approaches such as event-based simulation, probabilistic modeling, and statistical learning are gaining more significance. It was also emphasized that essential competencies for industrial engineers in this field include proficiency in SQL, Python, and statistical analysis tools. Data-driven decision support systems have the potential to solve traditional industrial engineering problems---such as supply chain management, logistics, and inventory optimization---much more efficiently.
+
+Moreover, it was underscored that theoretical knowledge alone is not sufficient; working on real-world problems is essential. Platforms like Kaggle provide valuable opportunities to develop hands-on projects, connect with professionals in the field, and focus on industry-specific challenges, all of which are crucial for career development. For instance, an industrial engineer applying data science to demand forecasting, production planning, or operational efficiency can gain a significant competitive edge. Many conventional engineering problems can now be enhanced using machine learning-based forecasting models, time series analysis, and big data solutions, ultimately leading to smarter and more optimized processes. Lastly, the discussion emphasized that industrial engineers should not only focus on developing models but also understand business processes, accurately define problems, and implement strategic, optimized solutions.
+
+### Personal Takeaways and Career Development
+
+As a recent graduate working in planning operations, I have had the opportunity to closely observe the growing importance of integrating data science into business processes. Through this experience, I have realized the critical role of data analytics and automation tools in strengthening decision support systems. To enhance efficiency in reporting processes, I have been improving my automation skills while also leveraging predictive models to support strategic decision-making. Moving forward, I aim to further develop my expertise in statistical analysis, machine learning, and optimization techniques to create added value in business processes.
+
+## b) Statistical Summaries with Custom Functions and Iteration Methods in mtcars dataset:
+
+### Importing Dataset
+```{r}
+data(mtcars)
+mtcars
+```
+
+### Discover the Data
+
+```{r}
+str(mtcars)
+summary(mtcars)
+```
+
+### Function of compute_stats
+
+```{r}
+data(mtcars)
+compute_stats <- function(x) {
+  stats <- list(
+    mean = mean(x, na.rm = TRUE),
+    median = median(x, na.rm = TRUE),
+    variance = var(x, na.rm = TRUE),
+    iqr = IQR(x, na.rm = TRUE),
+    min = min(x, na.rm = TRUE),
+    max = max(x, na.rm = TRUE)
+  )
+  return(stats)
+}
+```
+
+
+## c) (NA Doldurma)
+
+```{r}
+library(dslabs)
+data(na_example)
+na_example
+```
+
