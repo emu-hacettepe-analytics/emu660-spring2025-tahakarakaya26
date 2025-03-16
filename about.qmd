@@ -50,3 +50,7 @@ R, Quarto, Git, Python, Solidworks, Data Analysis, PowerBI, Tableau, SQL
 # Hobbies
 
 Rugby, Billards, Chess
+
+# Resume/CV
+
+[Download--Taha Karakaya](cv/Taha_Karakaya.pdf)
