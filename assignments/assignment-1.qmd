@@ -24,13 +24,13 @@ As a recent graduate working in planning operations, I have had the opportunity 
 
 ## b) Statistical Summaries with Custom Functions and Iteration Methods in mtcars dataset:
 
-### Importing Data
+### import data
 ```{r}
 data(mtcars)
 mtcars
 ```
 
-### Let's Discover the mtcars Dataset
+### discover the mtcars dataset
 
 ```{r}
 str(mtcars)
@@ -53,11 +53,9 @@ compute_stats <- function(x) {
 }
 ```
 
-### Dataframe of compute_stats
+### df of compute_stats
 
 ```{r}
-# Compute_stats fonksiyonunu tan??mlayal??m
-# Compute_stats fonksiyonunu tan??mlayal??m
 compute_stats <- function(x) {
   stats <- list(
     mean = mean(x, na.rm = TRUE),
@@ -70,7 +68,6 @@ compute_stats <- function(x) {
   return(stats)
 }
 
-# Bo?? bir veri ??er??evesi olu??tur
 stats_df <- data.frame(Column = character(),
                        Mean = numeric(),
                        Median = numeric(),
@@ -80,16 +77,12 @@ stats_df <- data.frame(Column = character(),
                        Max = numeric(),
                        stringsAsFactors = FALSE)
 
-# T??m s??tunlar?? d??ng?? ile gezelim
 for (col in names(mtcars)) {
   
-  # S??tunun say??sal olup olmad??????n?? kontrol et
   if (is.numeric(mtcars[[col]])) {
     
-    # Compute_stats fonksiyonunu uygula
     stats <- compute_stats(mtcars[[col]])
     
-    # Yeni sat??r?? veri ??er??evesine ekle
     new_row <- data.frame(Column = col,
                           Mean = stats$mean,
                           Median = stats$median,
@@ -99,12 +92,10 @@ for (col in names(mtcars)) {
                           Max = stats$max,
                           stringsAsFactors = FALSE)
     
-    # Yeni sat??r?? mevcut veri ??er??evesine ekleyelim
     stats_df <- rbind(stats_df, new_row)
   }
 }
 
-# Sonucu tablo olarak yazd??ral??m
 print(stats_df)
 
 ```
@@ -112,16 +103,95 @@ print(stats_df)
 ### with sapply
 
 ```{r}
-stats_results_sapply <- sapply(mtcars[, numeric_columns], compute_stats)
+data(mtcars)
+compute_stats <- function(x) {
+  c(Mean = mean(x, na.rm = TRUE),
+    Median = median(x, na.rm = TRUE),
+    Variance = var(x, na.rm = TRUE),
+    IQR = IQR(x, na.rm = TRUE),
+    Min = min(x, na.rm = TRUE),
+    Max = max(x, na.rm = TRUE))
+}
+stats_matrix <- sapply(mtcars, compute_stats)
+stats_df <- as.data.frame(t(stats_matrix))
+stats_df <- cbind(Column = rownames(stats_df), stats_df)
+rownames(stats_df) <- NULL
 
-stats_df_sapply <- as.data.frame(t(stats_results_sapply))
+print(stats_df)
 
-colnames(stats_df_sapply) <- c("Mean", "Median", "Variance", "IQR", "Min", "Max")
-
-stats_df_sapply <- cbind(Column = rownames(stats_df_sapply), stats_df_sapply)
-rownames(stats_df_sapply) <- NULL  # Sat??r isimlerini temizleyelim
-
-print(stats_df_sapply)
 
 ```
 
+## c) dslabs, missing values
+
+```{r}
+library(dslabs)
+data(na_example)
+na_example
+```
+
+### how many? where?
+
+```{r}
+na_count <- sum(is.na(na_example))
+cat("Number of total NA:", na_count, "\n")
+
+na_indices <- which(is.na(na_example))
+cat("Indices of NA values:", na_indices, "\n")
+```
+
+### mean and std calculations except NA values
+
+```{r}
+mean_original <- mean(na_example, na.rm = TRUE)
+sd_original <- sd(na_example, na.rm = TRUE)
+
+cat("Data except NA's - Mean:", mean_original, "\n")
+cat("Data except NA's - Standard Deviation:", sd_original, "\n")
+```
+
+### handling missing values, version 1, replacing with median 
+
+```{r}
+data("na_example")
+median_value <- median(na_example, na.rm = TRUE)
+na_median_filled <- ifelse(is.na(na_example), median_value, na_example)
+
+mean_median <- mean(na_median_filled)
+sd_median <- sd(na_median_filled)
+
+cat("data of replaced with median --- mean:", mean_median, "\n")
+cat("data of replaced with median --- std:", sd_median, "\n")
+```
+
+### handling missing values, version 2, replacing with random values
+
+```{r}
+data("na_example")
+na_fixed_filled <- ifelse(is.na(na_example), 5, na_example)
+
+mean_fixed <- mean(na_fixed_filled)
+sd_fixed <- sd(na_fixed_filled)
+
+cat("data of replaced with fixed value (5) --- mean:", mean_fixed, "\n")
+cat("data of replaced with fixed value (5) --- std:", sd_fixed, "\n")
+```
+
+### comparing results
+
+```{r}
+comparison_df <- data.frame(
+  Dataset = c("Original", "Median Filled", "Fixed Value (5)"),
+  Mean = c(mean_original, mean_median, mean_fixed),
+  StD = c(sd_original, sd_median, sd_fixed)
+)
+
+library(knitr)
+kable(comparison_df, caption = "Comparison of Different NA Handling Methods")
+```
+
+### which method should be used? and why?
+
+```{r}
+
+```
