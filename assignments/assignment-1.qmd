@@ -24,23 +24,22 @@ As a recent graduate working in planning operations, I have had the opportunity 
 
 ## b) Statistical Summaries with Custom Functions and Iteration Methods in mtcars dataset:
 
-### Importing Dataset
+### Importing Data
 ```{r}
 data(mtcars)
 mtcars
 ```
 
-### Discover the Data
+### Let's Discover the mtcars Dataset
 
 ```{r}
 str(mtcars)
 summary(mtcars)
 ```
 
-### Function of compute_stats
+### compute_stats
 
 ```{r}
-data(mtcars)
 compute_stats <- function(x) {
   stats <- list(
     mean = mean(x, na.rm = TRUE),
@@ -54,12 +53,75 @@ compute_stats <- function(x) {
 }
 ```
 
-
-## c) (NA Doldurma)
+### Dataframe of compute_stats
 
 ```{r}
-library(dslabs)
-data(na_example)
-na_example
+# Compute_stats fonksiyonunu tan??mlayal??m
+# Compute_stats fonksiyonunu tan??mlayal??m
+compute_stats <- function(x) {
+  stats <- list(
+    mean = mean(x, na.rm = TRUE),
+    median = median(x, na.rm = TRUE),
+    variance = var(x, na.rm = TRUE),
+    iqr = IQR(x, na.rm = TRUE),
+    min = min(x, na.rm = TRUE),
+    max = max(x, na.rm = TRUE)
+  )
+  return(stats)
+}
+
+# Bo?? bir veri ??er??evesi olu??tur
+stats_df <- data.frame(Column = character(),
+                       Mean = numeric(),
+                       Median = numeric(),
+                       Variance = numeric(),
+                       IQR = numeric(),
+                       Min = numeric(),
+                       Max = numeric(),
+                       stringsAsFactors = FALSE)
+
+# T??m s??tunlar?? d??ng?? ile gezelim
+for (col in names(mtcars)) {
+  
+  # S??tunun say??sal olup olmad??????n?? kontrol et
+  if (is.numeric(mtcars[[col]])) {
+    
+    # Compute_stats fonksiyonunu uygula
+    stats <- compute_stats(mtcars[[col]])
+    
+    # Yeni sat??r?? veri ??er??evesine ekle
+    new_row <- data.frame(Column = col,
+                          Mean = stats$mean,
+                          Median = stats$median,
+                          Variance = stats$variance,
+                          IQR = stats$iqr,
+                          Min = stats$min,
+                          Max = stats$max,
+                          stringsAsFactors = FALSE)
+    
+    # Yeni sat??r?? mevcut veri ??er??evesine ekleyelim
+    stats_df <- rbind(stats_df, new_row)
+  }
+}
+
+# Sonucu tablo olarak yazd??ral??m
+print(stats_df)
+
+```
+
+### with sapply
+
+```{r}
+stats_results_sapply <- sapply(mtcars[, numeric_columns], compute_stats)
+
+stats_df_sapply <- as.data.frame(t(stats_results_sapply))
+
+colnames(stats_df_sapply) <- c("Mean", "Median", "Variance", "IQR", "Min", "Max")
+
+stats_df_sapply <- cbind(Column = rownames(stats_df_sapply), stats_df_sapply)
+rownames(stats_df_sapply) <- NULL  # Sat??r isimlerini temizleyelim
+
+print(stats_df_sapply)
+
 ```
 
