@@ -1,32 +1,65 @@
 ---
-title: "Project X"
+title: "Trafik Kaza Analizi"
 ---
 
-Welcome to my/our project page.
+Proje sayfama hoş geldiniz!
 
-Keep an eye on this space to stay updated with my project activities.
+Bu projede; Birleşik Krallık'ta meydana gelen trafik kazalarının analizini gerçekleştireceğiz.\
+Çalışmamızda, kazaların yıllara, kazanın meydana geldiği bölgelere, hava koşullarına ve araç bilgilerine göre dağılımını inceleyerek önemli bulgulara ulaşmayı amaçlıyoruz.\
+Kazaların yoğunlaştığı dönemler, risk faktörleri ve olası önleyici tedbirler hakkında çıkarımlar yapacağız.
 
-(The titles below are provided as examples; please feel free to adjust them as necessary.)
+Güncellemeler için takipte kalın!
 
-# 1. Project Overview and Scope
+# 1. Projeye genel bakış ve kapsam alanı
 
-xxxxxx
+Projemizin amacı, elimizde bulunan veri setleri yardımıyla 2005--2010 yılları arasında Birleşik Krallık'ta meydana gelen trafik kazalarına yönelik kapsamlı bir analiz gerçekleştirmektir.\
 
-# 2. Data
+Çalışmada; kazaların tarihleri, meydana geldikleri bölgeler, hava koşulları ve kazaya karışan araç bilgileri gibi değişkenler dikkate alınarak kazaların dağılımı ve olası risk faktörleri analiz edilecektir.\
 
-xxxxxx
+Elde edilen bulgular doğrultusunda trafik güvenliğini artırmaya yönelik çıkarımlar yapılması hedeflenmektedir.
 
-## 2.1 Data Source
+# 2. Veri
 
-xxxxxx
+```{r}
+library(readr)
 
-## 2.2 General Information About Data
+accident_data <- read_csv("project_data/Accident_Information.csv")
+vehicle_data <- read_csv("project_data/Vehicle_Information.csv")
 
-xxxxxx
+head(accident_data)
+head(vehicle_data)
 
-## 2.3 Reason of Choice
+```
 
-xxxxxx
+## 2.1 Veri kaynağı
+
+Veriler, Kaggle platformunda yayımlanan aşağıdaki veri setinden elde edilmiştir:\
+<https://www.kaggle.com/datasets/tsiaras/uk-road-safety-accidents-and-vehicles/data>
+
+İstersen burada her veri setini ayrı ayrı biraz daha açıklayıp şöyle de genişletebiliriz:
+
+-    **Accident Information:** Kazaların meydana geldiği tarih, saat, hava durumu, yol tipi, kaza şiddeti gibi bilgiler içerir.
+
+-    **Vehicle Information:** Kazaya karışan araçların tipi, manevra şekli, araç özellikleri gibi bilgileri içerir.
+
+## 2.2 Veri üzerine genel bilgi
+
+Bu projede analiz için kullanılan veri setleri şunlardır:
+
+1.   Trafik kazalarına ilişkin bilgiler (2005--2010 dönemi)
+
+2.   Kazaya karışan araçlara ilişkin bilgiler (2005--2010 dönemi)
+
+Veri setlerinde; kaza tarihleri, hava koşulları, kaza yerleri, kazaya karışan araçların türleri ve bazı diğer çevresel faktörler bulunmaktadır.\
+Bu veriler aracılığıyla, kaza yoğunluklarının zamana, mekâna ve şartlara göre dağılımı incelenecek ve önemli bulgular elde edilmeye çalışılacaktır.
+
+## 2.3 Bu veriyi neden seçtik?
+
+Trafik kazaları, toplum sağlığı ve güvenliği açısından önemli bir sorun teşkil etmektedir.\
+Bu projede, 2005--2010 yılları arasındaki trafik kazalarını analiz ederek, kazaların zamana, mekâna ve çevresel faktörlere göre nasıl dağıldığını incelemeyi amaçlıyoruz.
+
+Kazaların yoğunlaştığı dönemleri, kazaya etki eden hava koşulları ve araç tipleri gibi unsurları tespit ederek, olası risk faktörlerini belirlemeye çalışacağız.\
+Bulguların, gelecekte alınabilecek önlemlere ve politika geliştirme süreçlerine katkı sağlaması hedeflenmektedir.
 
 ## 2.4 Preprocessing
 
