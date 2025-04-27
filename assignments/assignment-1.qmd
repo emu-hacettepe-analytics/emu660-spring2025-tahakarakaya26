@@ -21,6 +21,7 @@ As a recent graduate working in planning operations, I have had the opportunity 
 ## b) Statistical Summaries with Custom Functions and Iteration Methods in mtcars dataset:
 
 ### import data
+
 ```{r}
 data(mtcars)
 mtcars
@@ -148,7 +149,7 @@ cat("Data except NA's - Mean:", mean_original, "\n")
 cat("Data except NA's - Standard Deviation:", sd_original, "\n")
 ```
 
-### handling missing values, version 1, replacing with median 
+### handling missing values, version 1, replacing with median
 
 ```{r}
 data("na_example")

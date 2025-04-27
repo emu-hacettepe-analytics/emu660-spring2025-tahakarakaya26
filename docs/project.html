@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Taha Karakaya’s Analytics Lab - Project X</title>
+<title>Taha Karakaya’s Analytics Lab - Trafik Kaza Analizi</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -124,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Project X</li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Trafik Kaza Analizi</li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -168,12 +202,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#project-overview-and-scope" id="toc-project-overview-and-scope" class="nav-link active" data-scroll-target="#project-overview-and-scope">1. Project Overview and Scope</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">2. Data</a>
+  <li><a href="#projeye-genel-bakış-ve-kapsam-alanı" id="toc-projeye-genel-bakış-ve-kapsam-alanı" class="nav-link active" data-scroll-target="#projeye-genel-bakış-ve-kapsam-alanı">1. Projeye genel bakış ve kapsam alanı</a></li>
+  <li><a href="#veri" id="toc-veri" class="nav-link" data-scroll-target="#veri">2. Veri</a>
   <ul class="collapse">
-  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">2.1 Data Source</a></li>
-  <li><a href="#general-information-about-data" id="toc-general-information-about-data" class="nav-link" data-scroll-target="#general-information-about-data">2.2 General Information About Data</a></li>
-  <li><a href="#reason-of-choice" id="toc-reason-of-choice" class="nav-link" data-scroll-target="#reason-of-choice">2.3 Reason of Choice</a></li>
+  <li><a href="#veri-kaynağı" id="toc-veri-kaynağı" class="nav-link" data-scroll-target="#veri-kaynağı">2.1 Veri kaynağı</a></li>
+  <li><a href="#veri-üzerine-genel-bilgi" id="toc-veri-üzerine-genel-bilgi" class="nav-link" data-scroll-target="#veri-üzerine-genel-bilgi">2.2 Veri üzerine genel bilgi</a></li>
+  <li><a href="#bu-veriyi-neden-seçtik" id="toc-bu-veriyi-neden-seçtik" class="nav-link" data-scroll-target="#bu-veriyi-neden-seçtik">2.3 Bu veriyi neden seçtik?</a></li>
   <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing">2.4 Preprocessing</a></li>
   </ul></li>
   <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">3. Analysis</a>
@@ -196,7 +230,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Project X</h1>
+<h1 class="title">Trafik Kaza Analizi</h1>
 </div>
 
 
@@ -211,27 +245,113 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Welcome to my/our project page.</p>
-<p>Keep an eye on this space to stay updated with my project activities.</p>
-<p>(The titles below are provided as examples; please feel free to adjust them as necessary.)</p>
-<section id="project-overview-and-scope" class="level1">
-<h1>1. Project Overview and Scope</h1>
-<p>xxxxxx</p>
+<p>Proje sayfama hoş geldiniz!</p>
+<p>Bu projede; Birleşik Krallık’ta meydana gelen trafik kazalarının analizini gerçekleştireceğiz.<br>
+Çalışmamızda, kazaların yıllara, kazanın meydana geldiği bölgelere, hava koşullarına ve araç bilgilerine göre dağılımını inceleyerek önemli bulgulara ulaşmayı amaçlıyoruz.<br>
+Kazaların yoğunlaştığı dönemler, risk faktörleri ve olası önleyici tedbirler hakkında çıkarımlar yapacağız.</p>
+<p>Güncellemeler için takipte kalın!</p>
+<section id="projeye-genel-bakış-ve-kapsam-alanı" class="level1">
+<h1>1. Projeye genel bakış ve kapsam alanı</h1>
+<p>Projemizin amacı, elimizde bulunan veri setleri yardımıyla 2005–2010 yılları arasında Birleşik Krallık’ta meydana gelen trafik kazalarına yönelik kapsamlı bir analiz gerçekleştirmektir.<br>
+</p>
+<p>Çalışmada; kazaların tarihleri, meydana geldikleri bölgeler, hava koşulları ve kazaya karışan araç bilgileri gibi değişkenler dikkate alınarak kazaların dağılımı ve olası risk faktörleri analiz edilecektir.<br>
+</p>
+<p>Elde edilen bulgular doğrultusunda trafik güvenliğini artırmaya yönelik çıkarımlar yapılması hedeflenmektedir.</p>
 </section>
-<section id="data" class="level1">
-<h1>2. Data</h1>
-<p>xxxxxx</p>
-<section id="data-source" class="level2">
-<h2 class="anchored" data-anchor-id="data-source">2.1 Data Source</h2>
-<p>xxxxxx</p>
+<section id="veri" class="level1">
+<h1>2. Veri</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>accident_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"project_data/Accident_Information.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 2047256 Columns: 34
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (19): Accident_Index, 1st_Road_Class, 2nd_Road_Class, Accident_Severity...
+dbl  (13): 1st_Road_Number, 2nd_Road_Number, Did_Police_Officer_Attend_Scene...
+date  (1): Date
+time  (1): Time
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vehicle_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"project_data/Vehicle_Information.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 2177205 Columns: 24
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (18): Accident_Index, Age_Band_of_Driver, Driver_Home_Area_Type, Hit_Obj...
+dbl  (6): Age_of_Vehicle, Driver_IMD_Decile, Engine_Capacity_.CC., Vehicle_L...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(accident_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 34
+  Accident_Index `1st_Road_Class` `1st_Road_Number` `2nd_Road_Class`
+  &lt;chr&gt;          &lt;chr&gt;                        &lt;dbl&gt; &lt;chr&gt;           
+1 200501BS00001  A                             3218 &lt;NA&gt;            
+2 200501BS00002  B                              450 C               
+3 200501BS00003  C                                0 &lt;NA&gt;            
+4 200501BS00004  A                             3220 &lt;NA&gt;            
+5 200501BS00005  Unclassified                     0 &lt;NA&gt;            
+6 200501BS00006  Unclassified                     0 &lt;NA&gt;            
+# ℹ 30 more variables: `2nd_Road_Number` &lt;dbl&gt;, Accident_Severity &lt;chr&gt;,
+#   Carriageway_Hazards &lt;chr&gt;, Date &lt;date&gt;, Day_of_Week &lt;chr&gt;,
+#   Did_Police_Officer_Attend_Scene_of_Accident &lt;dbl&gt;, Junction_Control &lt;chr&gt;,
+#   Junction_Detail &lt;chr&gt;, Latitude &lt;dbl&gt;, Light_Conditions &lt;chr&gt;,
+#   `Local_Authority_(District)` &lt;chr&gt;, `Local_Authority_(Highway)` &lt;chr&gt;,
+#   Location_Easting_OSGR &lt;dbl&gt;, Location_Northing_OSGR &lt;dbl&gt;, Longitude &lt;dbl&gt;,
+#   LSOA_of_Accident_Location &lt;chr&gt;, Number_of_Casualties &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(vehicle_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 24
+  Accident_Index Age_Band_of_Driver Age_of_Vehicle Driver_Home_Area_Type       
+  &lt;chr&gt;          &lt;chr&gt;                       &lt;dbl&gt; &lt;chr&gt;                       
+1 200401BS00001  26 - 35                         3 Urban area                  
+2 200401BS00002  26 - 35                        NA Urban area                  
+3 200401BS00003  26 - 35                         4 Data missing or out of range
+4 200401BS00003  66 - 75                        NA Data missing or out of range
+5 200401BS00004  26 - 35                         1 Urban area                  
+6 200401BS00004  36 - 45                        10 Data missing or out of range
+# ℹ 20 more variables: Driver_IMD_Decile &lt;dbl&gt;, Engine_Capacity_.CC. &lt;dbl&gt;,
+#   Hit_Object_in_Carriageway &lt;chr&gt;, Hit_Object_off_Carriageway &lt;chr&gt;,
+#   Journey_Purpose_of_Driver &lt;chr&gt;, Junction_Location &lt;chr&gt;, make &lt;chr&gt;,
+#   model &lt;chr&gt;, Propulsion_Code &lt;chr&gt;, Sex_of_Driver &lt;chr&gt;,
+#   Skidding_and_Overturning &lt;chr&gt;, Towing_and_Articulation &lt;chr&gt;,
+#   Vehicle_Leaving_Carriageway &lt;chr&gt;, Vehicle_Location.Restricted_Lane &lt;dbl&gt;,
+#   Vehicle_Manoeuvre &lt;chr&gt;, Vehicle_Reference &lt;dbl&gt;, Vehicle_Type &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<section id="veri-kaynağı" class="level2">
+<h2 class="anchored" data-anchor-id="veri-kaynağı">2.1 Veri kaynağı</h2>
+<p>Veriler, Kaggle platformunda yayımlanan aşağıdaki veri setinden elde edilmiştir:<br>
+<a href="https://www.kaggle.com/datasets/tsiaras/uk-road-safety-accidents-and-vehicles/data" class="uri">https://www.kaggle.com/datasets/tsiaras/uk-road-safety-accidents-and-vehicles/data</a></p>
+<p>İstersen burada her veri setini ayrı ayrı biraz daha açıklayıp şöyle de genişletebiliriz:</p>
+<ul>
+<li><p><strong>Accident Information:</strong> Kazaların meydana geldiği tarih, saat, hava durumu, yol tipi, kaza şiddeti gibi bilgiler içerir.</p></li>
+<li><p><strong>Vehicle Information:</strong> Kazaya karışan araçların tipi, manevra şekli, araç özellikleri gibi bilgileri içerir.</p></li>
+</ul>
 </section>
-<section id="general-information-about-data" class="level2">
-<h2 class="anchored" data-anchor-id="general-information-about-data">2.2 General Information About Data</h2>
-<p>xxxxxx</p>
+<section id="veri-üzerine-genel-bilgi" class="level2">
+<h2 class="anchored" data-anchor-id="veri-üzerine-genel-bilgi">2.2 Veri üzerine genel bilgi</h2>
+<p>Bu projede analiz için kullanılan veri setleri şunlardır:</p>
+<ol type="1">
+<li><p>Trafik kazalarına ilişkin bilgiler (2005–2010 dönemi)</p></li>
+<li><p>Kazaya karışan araçlara ilişkin bilgiler (2005–2010 dönemi)</p></li>
+</ol>
+<p>Veri setlerinde; kaza tarihleri, hava koşulları, kaza yerleri, kazaya karışan araçların türleri ve bazı diğer çevresel faktörler bulunmaktadır.<br>
+Bu veriler aracılığıyla, kaza yoğunluklarının zamana, mekâna ve şartlara göre dağılımı incelenecek ve önemli bulgular elde edilmeye çalışılacaktır.</p>
 </section>
-<section id="reason-of-choice" class="level2">
-<h2 class="anchored" data-anchor-id="reason-of-choice">2.3 Reason of Choice</h2>
-<p>xxxxxx</p>
+<section id="bu-veriyi-neden-seçtik" class="level2">
+<h2 class="anchored" data-anchor-id="bu-veriyi-neden-seçtik">2.3 Bu veriyi neden seçtik?</h2>
+<p>Trafik kazaları, toplum sağlığı ve güvenliği açısından önemli bir sorun teşkil etmektedir.<br>
+Bu projede, 2005–2010 yılları arasındaki trafik kazalarını analiz ederek, kazaların zamana, mekâna ve çevresel faktörlere göre nasıl dağıldığını incelemeyi amaçlıyoruz.</p>
+<p>Kazaların yoğunlaştığı dönemleri, kazaya etki eden hava koşulları ve araç tipleri gibi unsurları tespit ederek, olası risk faktörlerini belirlemeye çalışacağız.<br>
+Bulguların, gelecekte alınabilecek önlemlere ve politika geliştirme süreçlerine katkı sağlaması hedeflenmektedir.</p>
 </section>
 <section id="preprocessing" class="level2">
 <h2 class="anchored" data-anchor-id="preprocessing">2.4 Preprocessing</h2>
