@@ -1,59 +1,57 @@
 ---
 title: "Trafik Kaza Analizi"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
 ---
 
-Proje sayfama hoş geldiniz!
-
-Bu projede; Birleşik Krallık'ta meydana gelen trafik kazalarının analizini gerçekleştireceğiz.\
-Çalışmamızda, kazaların yıllara, kazanın meydana geldiği bölgelere, hava koşullarına ve araç bilgilerine göre dağılımını inceleyerek önemli bulgulara ulaşmayı amaçlıyoruz.\
-Kazaların yoğunlaştığı dönemler, risk faktörleri ve olası önleyici tedbirler hakkında çıkarımlar yapacağız.
-
-Güncellemeler için takipte kalın!
 
 # 1. Projeye genel bakış ve kapsam alanı
 
-Projemizin amacı, elimizde bulunan veri setleri yardımıyla 2005--2010 yılları arasında Birleşik Krallık'ta meydana gelen trafik kazalarına yönelik kapsamlı bir analiz gerçekleştirmektir.\
+Projenin amacı, elimizde bulunan veri setleri yardımıyla 2005--2010 yılları arasında Birleşik Krallık'ta meydana gelen trafik kazalarına yönelik kapsamlı bir analiz gerçekleştirmektir.\
 
 Çalışmada; kazaların tarihleri, meydana geldikleri bölgeler, hava koşulları ve kazaya karışan araç bilgileri gibi değişkenler dikkate alınarak kazaların dağılımı ve olası risk faktörleri analiz edilecektir.\
 
 Elde edilen bulgular doğrultusunda trafik güvenliğini artırmaya yönelik çıkarımlar yapılması hedeflenmektedir.
 
+
 # 2. Veri
 
 ```{r}
+library(forcats)
+library(tidyr)
 library(readr)
+library(dplyr)
+library(janitor)
+library(lubridate)
+library(readr)
+library(readxl)
+library(ggplot2)
+library(nnet)
+library(ggcorrplot)
+library(leaflet)
+library(stringr)
 
-accident_data <- read_csv("project_data/Accident_Information.csv")
-vehicle_data <- read_csv("project_data/Vehicle_Information.csv")
-
-head(accident_data)
-head(vehicle_data)
+accidents <- read_csv("project_data/Accident_Information.csv")
+vehicles <- read_csv("project_data/Vehicle_Information.csv")
 
 ```
 
-## 2.1 Veri kaynağı
+## 2.1 Veri kaynağı ve genel bilgi
 
 Veriler, Kaggle platformunda yayımlanan aşağıdaki veri setinden elde edilmiştir:\
 <https://www.kaggle.com/datasets/tsiaras/uk-road-safety-accidents-and-vehicles/data>
 
 İstersen burada her veri setini ayrı ayrı biraz daha açıklayıp şöyle de genişletebiliriz:
 
--    **Accident Information:** Kazaların meydana geldiği tarih, saat, hava durumu, yol tipi, kaza şiddeti gibi bilgiler içerir.
+-    **Kaza Bilgisi:** Kazaların meydana geldiği tarih, saat, hava durumu, yol tipi, kaza şiddeti gibi bilgiler içerir. **34--1048575**
 
--    **Vehicle Information:** Kazaya karışan araçların tipi, manevra şekli, araç özellikleri gibi bilgileri içerir.
+-    **Araç Bilgisi:** Kazaya karışan araçların tipi, manevra şekli, araç özellikleri gibi bilgileri içerir. **24--1048575**
 
-## 2.2 Veri üzerine genel bilgi
-
-Bu projede analiz için kullanılan veri setleri şunlardır:
-
-1.   Trafik kazalarına ilişkin bilgiler (2005--2010 dönemi)
-
-2.   Kazaya karışan araçlara ilişkin bilgiler (2005--2010 dönemi)
-
-Veri setlerinde; kaza tarihleri, hava koşulları, kaza yerleri, kazaya karışan araçların türleri ve bazı diğer çevresel faktörler bulunmaktadır.\
-Bu veriler aracılığıyla, kaza yoğunluklarının zamana, mekâna ve şartlara göre dağılımı incelenecek ve önemli bulgular elde edilmeye çalışılacaktır.
-
-## 2.3 Bu veriyi neden seçtik?
+## 2.2 Bu veriyi neden seçtik?
 
 Trafik kazaları, toplum sağlığı ve güvenliği açısından önemli bir sorun teşkil etmektedir.\
 Bu projede, 2005--2010 yılları arasındaki trafik kazalarını analiz ederek, kazaların zamana, mekâna ve çevresel faktörlere göre nasıl dağıldığını incelemeyi amaçlıyoruz.
@@ -61,30 +59,565 @@ Bu projede, 2005--2010 yılları arasındaki trafik kazalarını analiz ederek, 
 Kazaların yoğunlaştığı dönemleri, kazaya etki eden hava koşulları ve araç tipleri gibi unsurları tespit ederek, olası risk faktörlerini belirlemeye çalışacağız.\
 Bulguların, gelecekte alınabilecek önlemlere ve politika geliştirme süreçlerine katkı sağlaması hedeflenmektedir.
 
-## 2.4 Preprocessing
 
-xxxxxx
 
-# 3. Analysis
+## 3.1 Veri Analizi
+### 3.1.1 Ön İşleme ve Veri Manipülasyonu
+#### 3.1.1.1 Sütun İsimlerini Düzeltme
+```{r}
+accidents <- accidents %>% clean_names()
+vehicles <- vehicles %>% clean_names()
+```
 
-xxxxxx
 
-## 3.1 Exploratory Data Analysis
+```{r}
+names(accidents)
+```
+#### 3.1.1.2 NA Değerlerini İnceleme ve Temizleme
 
-xxxxxx
+```{r}
+#iki veride de yüzdesel olarak NA değerlerini görebileceğimiz fonksiyon
+#ek olarak bazı değerler NA olmayıp "Not known" vs. 
+na_summary <- function(df) {
+  df %>%
+    summarise(across(
+      everything(),
+      ~ sum(is.na(.) |
+              . %in% c("Data missing or out of range", "Unallocated", "None", "NA", "Not known","Unknown", "Other vehicle","Other"))
+    )) %>%
+    pivot_longer(everything(), names_to = "column", values_to = "na_count") %>%
+    mutate(
+      total_rows = nrow(df),
+      na_percent = round((na_count / total_rows) * 100, 2)
+    ) %>%
+    arrange(desc(na_percent))
+}
 
-## 3.2 Trend Analysis
+accident_na_summary <- na_summary(accidents)
+vehicle_na_summary  <- na_summary(vehicles)
+```
 
-xxxxxx
+```{r}
+accident_na_summary
+```
 
-## 3.3 Model Fitting
 
-xxxxxx
+```{r}
+vehicle_na_summary
+```
+```{r}
+#sadece kullanacağımız sütunları seçelim, (NA olsun veya olmasın) <görüntü kirliliği>
+accidents <- accidents %>%
+  select(accident_index, time, accident_severity, longitude, latitude,
+         number_of_casualties, number_of_vehicles, day_of_week, date,
+         weather_conditions, road_surface_conditions, speed_limit, urban_or_rural_area, light_conditions)
 
-## 3.4 Results
+vehicles <- vehicles %>%
+  select(accident_index, engine_capacity_cc, vehicle_manoeuvre, vehicle_type,
+         make, driver_imd_decile, age_band_of_driver, age_of_vehicle)
+```
 
-xxxxxx
+```{r}
+#bazı araçların kaza kaydı mevcut değil, bazı kazaların araç kaydı mevcut değil. Bu sebeple inner join kullanarak her ikisinde olanı da görmek istiyoruz.
+combined <- inner_join(vehicles, accidents, by = "accident_index")
+```
 
-# 4. Results and Key Takeaways
 
-xxxxxx
+```{r}
+#Anlamlı olmayan verileri NA olarak işliyoruz.
+na_like <- c("Unallocated", "None", "NA", "Not known", "Data missing or out of range", "Other vehicle","Unknown","Other")
+
+combined <- combined %>%
+  mutate(across(
+    everything(),
+    ~ ifelse(. %in% na_like, NA, .)
+  ))
+
+#motor gücü 50cc'den az olanları çıkartıyoruz.
+combined <- combined %>%
+  mutate(engine_capacity_cc = as.numeric(engine_capacity_cc)) %>% 
+  filter(engine_capacity_cc >= 50 | is.na(engine_capacity_cc))
+```
+
+```{r}
+combined_na_summary <- na_summary(combined)
+combined_na_summary
+```
+
+```{r}
+#driver_imd_decile sütunu:Index of Multiple Deprivation (sürücünün yaşadığı bölgenin sosyo-ekonomik durumu)
+#bu sebeple bu veriyi kaybetmek istemiyoruz. NA değerlerini dağılımı bozmaması açısından kendi dağılımına göre örnek veriyle dolduracağız. Bu ve diğer yüzde 5 NA içerenleri dağılımı bozmamak adına örnek veriyle dolduruyoruz.
+
+set.seed(660)
+
+# Fonksiyon: NA'ları orijinal dağılıma göre doldur
+impute_column <- function(column) {
+  if (!is.numeric(column) && !is.character(column) && !is.factor(column)) {
+    return(column)  # işlem yapma
+  }
+  non_na_values <- column[!is.na(column)]
+  na_count <- sum(is.na(column))
+  if (length(non_na_values) == 0 || na_count == 0) {
+    return(column)  # işlem gerekmez
+  }
+  imputed_values <- sample(non_na_values, na_count, replace = TRUE)
+  column[is.na(column)] <- imputed_values
+  return(column)
+}
+
+# 1. NA oranlarını hesapla
+na_summary <- combined %>%
+  summarise(across(everything(), ~mean(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "na_ratio")
+
+# 2. %5'ten büyük olanları seç
+cols_to_impute <- na_summary %>%
+  filter(na_ratio > 0.05) %>%
+  pull(column)
+
+# 3. İlgili sütunları doldur
+combined[cols_to_impute] <- combined[cols_to_impute] %>%
+  lapply(impute_column)
+```
+
+```{r}
+#kalan yüzde 5'ten küçük orana sahip NA değerlerini siliyorum
+combined <- combined %>%
+  drop_na()
+```
+
+
+```{r}
+na_summary <- function(df) {
+  df %>%
+    summarise(across(
+      everything(),
+      ~ sum(is.na(.) |
+              . %in% c("Data missing or out of range", "Unallocated", "None", "NA", "Not known", "Other vehicle", "Unknown","Other"))
+    )) %>%
+    pivot_longer(everything(), names_to = "column", values_to = "na_count") %>%
+    mutate(
+      total_rows = nrow(df),
+      na_percent = round((na_count / total_rows) * 100, 2)
+    ) %>%
+    arrange(desc(na_percent))
+}
+na_summary(combined)
+```
+#### 3.1.1.3 Karakter Verilerinin Faktöre Dönüştürülmesi
+
+```{r}
+#okunabilirliğinin rahat olması adına hız limiti değerlerini mph'den km/saat'e çevirelim
+#1 mph ≈ 1.60934 km/h
+combined <- combined %>%
+  mutate(speed_limit = round(speed_limit * 1.60934, 0))
+```
+
+```{r}
+#Saat bazında trendi inceleyebilmek adına saat verisini kategorize ediyoruz.
+combined <- combined %>%
+  mutate(
+    date = as.Date(date, format = "%d.%m.%Y"),
+    hour = as.numeric(substr(time, 1, 2)),
+    daytime = case_when(
+      hour >= 5  & hour < 10 ~ "1",  # Sabah Telaşı
+      hour >= 10 & hour < 15 ~ "2",  # Ofis Saatleri
+      hour >= 15 & hour < 19 ~ "3",  # İş Çıkışı
+      hour >= 19 & hour < 23 ~ "4",  # Akşam
+      TRUE ~ "5"                     # Gece
+    )
+  ) %>%
+  select(-time, -hour)
+```
+```{r}
+combined$daytime <- factor(combined$daytime,
+                           levels = c("1", "2", "3", "4", "5"),
+                           labels = c("Sabah", "Ofis", "Cikis", "Aksam", "Gece"))
+```
+
+```{r}
+#sıralı olması gereken faktörleri ileride kuracağımız model için sıralı oalrak belirttik
+combined <- combined %>%
+  mutate(
+    age_band_of_driver = factor(age_band_of_driver,
+                                levels = c("0 - 5","6 - 10", "11 - 15", "16 - 20", "21 - 25", "26 - 35", "36 - 45", "46 - 55", "56 - 65", "66 - 75"),
+                                ordered = TRUE),
+    driver_imd_decile = factor(driver_imd_decile, levels = 1:10, ordered = TRUE),
+    accident_severity = factor(accident_severity, levels = c("Slight", "Serious", "Fatal"), ordered = TRUE),
+    day_of_week = factor(day_of_week,
+                         levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                         ordered = TRUE)
+  )
+```
+
+```{r}
+#karakter değerlerini de faktöre çevirelim
+combined <- combined %>%
+  mutate(across(where(is.character), as.factor))
+```
+
+#### 3.1.2 Açıklayıcı Veri Analizi
+
+```{r fig.show='hold', echo=FALSE, message=FALSE, warning=FALSE, fig.cap='Sayısal Değişkenler Arası Korelasyon'}
+#hedef değişkenimizin dağılımı
+combined %>%
+  count(accident_severity) %>%
+  mutate(percentage = round(n / sum(n) * 100, 2)) %>%
+  rename(
+    "Kaza Şiddeti" = accident_severity,
+    "Kayıt Sayısı" = n,
+    "Yuzde (%)" = percentage)
+```
+
+```{r fig.show='hold', echo=FALSE, message=FALSE, warning=FALSE, fig.cap='Sayısal Değişkenler Arası Korelasyon'}
+#sayısal değişkenler arasında herhangi bir ilişki var mı? nedensellikten bağımsız
+
+library(ggcorrplot)
+cor_matrix <- cor(
+  combined %>% select(where(is.numeric)),
+  use = "complete.obs",
+  method = "spearman"
+)
+
+ggcorrplot(
+  cor_matrix,
+  hc.order = TRUE,           # Hiyerarşik kümeleme
+  type = "upper",
+  lab = TRUE,
+  lab_size = 3,
+  method = "square",
+  colors = c("red", "white", "blue"),
+  title = "Sayısal Değişkenler Arası Korelasyon",
+  ggtheme = ggplot2::theme_minimal()
+)
+#belirgin bir fark olmadığı görülmekte
+```
+
+```{r fig.show='hold', echo=FALSE, message=FALSE, warning=FALSE, fig.cap='Sayısal Değişkenler Arası Korelasyon'}
+#günler arasında herhangi bir trend var mı?
+#pazar günündeki düşüş dışarıdaki işletmelerin kapalı olmasına yorumlanabilir.
+combined %>%
+  count(day_of_week) %>%
+  mutate(pct = round(n / sum(n) * 100, 2)) %>%
+  rename(
+    "Gunler" = day_of_week,
+    "Kayıt Sayısı" = n,
+    "Yuzde (%)" = pct)
+
+```
+#### 3.1.3 Veri Görselleştirme ve Trend Analizi
+
+```{r fig.show='hold', echo=FALSE, message=FALSE, warning=FALSE, fig.cap='Sayısal Değişkenler Arası Korelasyon'}
+#yıllara göre kaza yoğunluğu
+combined %>%
+  mutate(year = lubridate::year(date)) %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "darkred", size = 3) +
+  labs(
+    title = "Yıllara Göre Kaza Sayısı",
+    x = "Yıl",
+    y = "Kaza Sayısı"
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+```{r}
+#saat dilimlerine göre kaza sayısı, gece saatlerinde ciddi bir farkla daha kaza meydana gelmektedir.
+combined %>%
+  count(daytime, accident_severity) %>%
+  ggplot(aes(x = daytime, y = n, fill = accident_severity)) +
+  geom_col(position = "dodge") +
+  scale_y_log10() + # Logaritmik ölçek
+    scale_x_discrete(
+    labels = c(
+      "1" = "Sabah",
+      "2" = "Ofis",
+      "3" = "Çıkış",
+      "4" = "Aksam",
+      "5" = "Gece"
+    )
+  ) +
+    scale_fill_brewer(palette = "Set2") +
+    labs(
+    title = "Saat Dilimine Göre Kaza Şiddeti Dağılımı (Log Ölçekli)",
+    x = "Saat Grubu",
+    y = "Kaza Sayısı (log10)",
+    fill = "Kaza Şiddeti"
+  ) +
+  theme_minimal()
+```
+```{r fig.show='hold', echo=FALSE, message=FALSE, warning=FALSE, fig.cap='Sayısal Değişkenler Arası Korelasyon'}
+#gece yapılan kazalar aydınlatmalardan kaynaklı mı?
+combined %>%
+  filter(daytime == "Gece") %>%  # Eğer label’ı Gece yaptıysan
+  count(light_conditions) %>%
+  mutate(percentage = round(n / sum(n) * 100, 2)) %>%
+  arrange(desc(percentage)) %>%
+  rename(
+    "Isık Kosulları" = light_conditions,
+    "Kayıt Sayısı" = n,
+    "Yuzde (%)" = percentage)
+#saat sütunu yanlış bir veri olabilir. gece 23-4 arası gündüz ışığı olamaz.
+```
+```{r}
+#yol durumunun kaza sayısına etkisi. 
+library(forcats)
+combined %>%
+  count(road_surface_conditions, accident_severity) %>%
+  ggplot(aes(y = fct_reorder(road_surface_conditions, n), x = n, fill = accident_severity)) +
+  geom_col(position = "dodge") +
+  scale_x_log10() +  # Logaritmik ölçek
+  scale_fill_brewer(palette = "Set2") + 
+  labs(
+    title = "Yol Durumuna Göre Kaza Şiddeti (Log Ölçekli)",
+    x = "Kaza Sayısı (log10)",
+    y = "Yol Durumu",
+    fill = "Kaza Şiddeti"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+#hava durumunun kaza sayısına etkisi
+combined %>%
+  count(weather_conditions, accident_severity) %>%
+  ggplot(aes(y = fct_reorder(weather_conditions, n), x = n, fill = accident_severity)) +
+  geom_col(position = "dodge") +
+  scale_x_log10() +  # Logaritmik ölçek
+  scale_fill_brewer(palette = "Set2") + 
+  labs(
+    title = "Hava Koşullarına Göre Kaza Şiddeti (Log Ölçekli)",
+    x = "Kaza Sayısı (log10)",
+    y = "Hava Koşulu",
+    fill = "Kaza Şiddeti"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+```{r}
+#kaza anı manevrasına göre kaza sayıları, en çok kaza düz giderken gerçekleşmektedir. yani manevranın doğrudan bağlantısı yoktur.
+library(forcats)
+combined %>%
+  count(vehicle_manoeuvre, sort = TRUE) %>%
+  ggplot(aes(x = n, y = fct_reorder(vehicle_manoeuvre, n))) +
+  geom_col(fill = "lightcoral") +
+  labs(
+    title = "Manevra Türüne Göre Kaza Sayısı",
+    x = "Kaza Sayısı",
+    y = "Araç Manevrası"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+#fatal kaza derecesinin Birleşik Krallık haritasında gösterimi 
+library(leaflet)
+map_fatal <- combined %>%
+  filter(accident_severity == "Fatal") %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  mutate(color = "#ff6666")  # pastel kırmızı
+
+# Leaflet haritası
+leaflet(map_fatal) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 2,
+    color = ~color,
+    stroke = FALSE,
+    fillOpacity = 0.4,
+    popup = ~paste("Kaza Şiddeti:", accident_severity)
+  ) %>%
+  addLegend("bottomright",
+            colors = "#ff6666",
+            labels = "Fatal",
+            title = "Kaza Şiddeti")
+```
+```{r}
+#motorsiklet vs diğerleri
+library(stringr)
+combined_vehicle_grouped <- combined %>%
+  mutate(
+    vehicle_group = ifelse(str_detect(vehicle_type, regex("Motorcycle", ignore_case = TRUE)),
+                           "Motorsiklet", "Diger")
+  )
+
+```
+
+```{r}
+#yüzdesel kaza şiddeti karşılaştırılması
+dodge <- position_dodge(width = 0.7)
+
+combined_vehicle_grouped %>%
+  count(vehicle_group, accident_severity) %>%
+  group_by(vehicle_group) %>%
+  mutate(percentage = round(n / sum(n) * 100, 2)) %>%
+  ggplot(aes(x = accident_severity, y = percentage, fill = vehicle_group)) +
+  geom_col(position = dodge, width = 0.7) +
+  geom_text(
+    aes(label = paste0(percentage, "%")),
+    position = dodge,
+    vjust = -0.4,
+    size = 4
+  ) +
+  labs(
+    title = "Arac Tipine Gore Kaza Şiddeti (Yuzde Dagılımı)",
+    x = NULL,
+    y = NULL,
+    fill = "Arac Grubu"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.grid = element_blank(),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+```{r}
+#yüzdesel olarak motorsiklet kazalarını sosyoekonomik düzeyde inceledik.
+motor_imd <- combined_vehicle_grouped %>%
+  group_by(vehicle_group, driver_imd_decile) %>%
+  summarise(kaza_sayisi = n(), .groups = "drop") %>%
+  mutate(percentage = round(kaza_sayisi / sum(kaza_sayisi) * 100, 2))
+
+ggplot(motor_imd, aes(x = driver_imd_decile, y = percentage, fill = vehicle_group)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(
+    name = "Arac Turu",  # Legend başlığı
+    values = c("Motosiklet" = "#00BFC4", "Diğer" = "#F8766D"),  # Renk eşlemesi
+    breaks = c("Motosiklet", "Diğer"),  # Sıralama garantisi
+    labels = c("Motosiklet", "Diger Araclar")  # Görünen isimler
+  ) +
+  labs(
+    title = "IMD ve Arac Turune Gore Kaza Oranı",
+    x = "IMD Decile",
+    y = "Kaza Yuzdesi"
+  ) +
+  theme_minimal()
+#bu da gösteriyor ki sosyoekonomik düzeyi yüksek kişilerin motorsiklet kazasına karışma ihtimali daha düşük.
+```
+
+
+## 3.3 Model
+
+### 3.3.1 Multinomial Logistic Regression 
+```{r}
+library(nnet)
+library(tidyselect)
+library(dplyr)
+
+# Kategorik hale getir
+combined$accident_severity <- factor(combined$accident_severity)
+
+# Modelde kullanılacak değişkenler
+vars <- c("vehicle_type", "vehicle_manoeuvre", 
+          "speed_limit", "road_surface_conditions", "weather_conditions", 
+          "age_of_vehicle", "engine_capacity_cc", "driver_imd_decile")
+
+model_data <- combined %>%
+  select(all_of(vars), accident_severity) %>%
+  na.omit()
+
+# Veri setini ayır
+set.seed(660)
+sample_index <- sample(seq_len(nrow(model_data)), size = 0.7 * nrow(model_data))
+train_data <- model_data[sample_index, ]
+test_data  <- model_data[-sample_index, ]
+
+# Modeli kur
+model <- multinom(accident_severity ~ ., data = train_data)
+
+# Tahmin
+predictions <- predict(model, newdata = test_data)
+
+# predictions ve actual aynı seviyede faktör olmalı
+predictions <- factor(predictions, levels = levels(train_data$accident_severity))
+actual <- factor(test_data$accident_severity, levels = levels(train_data$accident_severity))
+
+# Confusion Matrix
+conf_matrix <- table(Predicted = predictions, Actual = actual)
+print(conf_matrix)
+
+# Doğruluk oranı
+accuracy <- mean(as.character(predictions) == as.character(actual))
+cat("Doğruluk Oranı:", round(accuracy * 100, 2), "%\n")
+
+```
+
+
+```{r}
+common_levels <- levels(factor(c(predictions, actual)))
+
+predictions <- factor(predictions, levels = common_levels, ordered = FALSE)
+actual      <- factor(actual,      levels = common_levels, ordered = FALSE)
+
+conf_matrix <- table(Predicted = predictions, Actual = actual)
+print(conf_matrix)
+
+accuracy <- mean(predictions == actual)
+cat("Doğruluk Oranı:", round(accuracy * 100, 2), "%\n")
+```
+
+### 3.3.2 Random Forest
+
+```{r}
+library(dplyr)
+library(randomForest)
+
+combined$accident_severity <- as.factor(combined$accident_severity)
+
+model_data <- combined %>%
+  select(accident_severity, engine_capacity_cc, age_of_vehicle,
+         speed_limit, number_of_casualties, number_of_vehicles,
+         vehicle_type, vehicle_manoeuvre, road_surface_conditions,
+         weather_conditions, light_conditions, urban_or_rural_area)
+
+model_data <- na.omit(model_data)
+
+set.seed(123)
+train_index <- sample(nrow(model_data), 0.8 * nrow(model_data))
+train_data <- model_data[train_index, ]
+test_data <- model_data[-train_index, ]
+
+rf_model <- randomForest(accident_severity ~ ., data = train_data, ntree = 100)
+
+predictions <- predict(rf_model, newdata = test_data)
+
+confusion <- table(Predicted = predictions, Actual = test_data$accident_severity)
+print(confusion)
+
+accuracy <- mean(as.character(predictions) == as.character(test_data$accident_severity))
+cat("Doğruluk Oranı:", round(accuracy * 100, 2), "%\n")
+```
+
+```{r}
+conf_mat <- table(Predicted = predictions, Actual = test_data$accident_severity)
+
+accuracy <- sum(diag(conf_mat)) / sum(conf_mat)
+
+cat("Doğruluk Oranı:", round(accuracy * 100, 2), "%\n")
+```
+
+# 4. Sonuçlar
+
+--Pazar günlerinde kaza sayısının diğer günlere göre azaldığı gözlemlenmiştir (muhtemelen cafe, restoran gibi yerlerin kapalı olmasından dolayı).
+
+--Hava koşullarının ve yol durumlarının sanıldığı kadar etkili olmadığı; bunun yerine sürücü bazlı hataların öne çıktığı anlaşılmıştır.
+
+--Harita analizine göre Manchester, London gibi merkezi şehirlerde hayati tehlikesi yüksek kazaların yoğunlaştığı görülmektedir.
+
+--Motorsiklet sürücülerinin, hayati tehlikesi yüksek kazalara daha fazla karıştığı belirlenmiştir.
+
+--Sosyoekonomik düzeyi yüksek motorsiklet sürücülerinin ise kazaya karışma oranlarının diğer araç kullanıcılarına göre daha az olduğu gözlemlenmiştir.
+
